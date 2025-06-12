@@ -2,7 +2,7 @@ import time
 import requests
 from bs4 import BeautifulSoup
 
-BOT_TOKEN = "TON_BOT_TOKEN_ICI"
+BOT_TOKEN = "7504696777:AAEH7gI_lveeaGxV0W6R5UoH1A4T-dhynvU"
 CHAT_ID = 5174161590
 
 NITTER_MIRRORS = [
