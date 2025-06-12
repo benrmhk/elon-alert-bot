@@ -3,7 +3,7 @@ import requests
 from bs4 import BeautifulSoup
 
 BOT_TOKEN = "TON_BOT_TOKEN_ICI"
-CHAT_ID = 5174161590,6231609962
+CHAT_ID = 5174161590
 
 NITTER_MIRRORS = [
     "https://nitter.1d4.us",
