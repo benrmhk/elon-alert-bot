@@ -66,6 +66,10 @@ def check_elon_tweets():
     except Exception as e:
         print("[⚠️] Erreur :", e)
 
+# ✅ Envoi d’un message de démarrage
+send_telegram_alert("🤖 Le bot Elon est bien en ligne et opérationnel sur Render ✅")
+
+# 🔁 Boucle principale
 while True:
     check_elon_tweets()
     time.sleep(60)
