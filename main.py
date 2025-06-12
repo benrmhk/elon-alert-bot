@@ -3,7 +3,8 @@ import requests
 from bs4 import BeautifulSoup
 
 BOT_TOKEN = "7504696777:AAEH7gI_lveeaGxV0W6R5UoH1A4T-dhynvU"
-CHAT_ID = 5174161590,6231609962
+CHAT_IDS = [5174161590, 6231609962]
+
 
 NITTER_MIRRORS = [
     "https://nitter.1d4.us",
@@ -16,9 +17,11 @@ NITTER_MIRRORS = [
 seen_tweets = set()
 
 def send_telegram_alert(message):
-    url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
-    payload = {"chat_id": CHAT_ID, "text": message, "parse_mode": "HTML"}
-    requests.post(url, data=payload)
+    for chat_id in CHAT_IDS:
+        url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
+        payload = {"chat_id": chat_id, "text": message, "parse_mode": "HTML"}
+        requests.post(url, data=payload)
+
 
 def get_working_mirror():
     for mirror in NITTER_MIRRORS:
