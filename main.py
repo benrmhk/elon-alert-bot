@@ -2,7 +2,7 @@ import time
 import requests
 from bs4 import BeautifulSoup
 
-BOT_TOKEN = "7504696777:AAEH7gI_lveeaGxV0W6R5UoH1A4T-dhynvU"
+BOT_TOKEN = "TON_BOT_TOKEN_ICI"
 CHAT_ID = 5174161590
 
 NITTER_MIRRORS = [
@@ -30,6 +30,9 @@ def get_working_mirror():
             continue
     return None
 
+def extract_tweet_id(link):
+    return link.rstrip("/").split("/")[-1]
+
 def check_elon_tweets():
     global seen_tweets
     print("[🔍] Vérification des tweets...")
@@ -52,24 +55,25 @@ def check_elon_tweets():
 
             content = tweet.find("div", class_="tweet-content")
             media = tweet.find("a", class_="still-image") or tweet.find("video")
-
-            text_content = content.text.strip() if content else ""
             tweet_link = tweet.find("a", class_="tweet-link")["href"]
+            text_content = content.text.strip() if content else ""
 
             if text_content == "" and media:
-                full_link = f"{mirror}{tweet_link}"
-                send_telegram_alert(f"📸 Elon a posté un tweet sans texte :\n{full_link}")
-                print("[✅] Alerte envoyée :", full_link)
+                tweet_id_clean = extract_tweet_id(tweet_link)
+                twitter_link = f"https://twitter.com/elonmusk/status/{tweet_id_clean}"
+                message = f"📸 Elon a posté un tweet sans texte :\n🔗 {twitter_link}"
+                send_telegram_alert(message)
+                print("[✅] Alerte envoyée :", twitter_link)
 
             seen_tweets.add(tweet_id)
 
     except Exception as e:
         print("[⚠️] Erreur :", e)
 
-# ✅ Envoi d’un message de démarrage
-send_telegram_alert("🤖 Le bot Elon est bien en ligne et opérationnel sur Render ✅")
+# Message test de démarrage
+send_telegram_alert("🤖 Le bot Elon est en ligne sur Render et prêt à surveiller les tweets silencieux !")
 
-# 🔁 Boucle principale
+# Boucle principale
 while True:
     check_elon_tweets()
     time.sleep(60)
