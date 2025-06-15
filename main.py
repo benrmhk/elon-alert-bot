@@ -1,10 +1,11 @@
 import time
 import requests
 from bs4 import BeautifulSoup
+import threading
+import json
 
-BOT_TOKEN = "7504696777:AAEH7gI_lveeaGxV0W6R5UoH1A4T-dhynvU"
-CHAT_IDS = [5174161590, 6231609962]
-
+BOT_TOKEN = "TON_BOT_TOKEN_ICI"
+CHAT_IDS = [5174161590]  # Tu peux ajouter d'autres ID ici
 
 NITTER_MIRRORS = [
     "https://nitter.1d4.us",
@@ -21,7 +22,6 @@ def send_telegram_alert(message):
         url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
         payload = {"chat_id": chat_id, "text": message, "parse_mode": "HTML"}
         requests.post(url, data=payload)
-
 
 def get_working_mirror():
     for mirror in NITTER_MIRRORS:
@@ -73,8 +73,38 @@ def check_elon_tweets():
     except Exception as e:
         print("[⚠️] Erreur :", e)
 
-# Message test de démarrage
+def listen_for_messages():
+    last_update_id = None
+    while True:
+        try:
+            url = f"https://api.telegram.org/bot{BOT_TOKEN}/getUpdates"
+            if last_update_id:
+                url += f"?offset={last_update_id + 1}"
+            response = requests.get(url)
+            updates = response.json()
+
+            for update in updates.get("result", []):
+                last_update_id = update["update_id"]
+                message = update.get("message")
+                if message and message.get("text"):
+                    chat_id = message["chat"]["id"]
+                    if message["text"].lower().strip() in ["bot", "ping", "actif", "/start"]:
+                        reply_url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
+                        reply = {
+                            "chat_id": chat_id,
+                            "text": "🤖 Bot actif et en ligne ✅",
+                            "parse_mode": "HTML"
+                        }
+                        requests.post(reply_url, data=reply)
+        except Exception as e:
+            print("[⚠️] Erreur dans le listener :", e)
+        time.sleep(3)
+
+# Démarrage
 send_telegram_alert("🤖 Le bot Elon est en ligne sur Render et prêt à surveiller les tweets silencieux !")
+
+# Démarrer l'écoute des messages en parallèle
+threading.Thread(target=listen_for_messages, daemon=True).start()
 
 # Boucle principale
 while True:
