@@ -4,8 +4,8 @@ from bs4 import BeautifulSoup
 import threading
 import json
 
-BOT_TOKEN = "TON_BOT_TOKEN_ICI"
-CHAT_IDS = [5174161590]  # Tu peux ajouter d'autres ID ici
+BOT_TOKEN = "7504696777:AAEH7gI_lveeaGxV0W6R5UoH1A4T-dhynvU"
+CHAT_IDS = [5174161590, 6231609962]
 
 NITTER_MIRRORS = [
     "https://nitter.1d4.us",
